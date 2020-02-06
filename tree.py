@@ -7,12 +7,15 @@ from collections import deque
 from random import random, randint, sample
 from math import pi
 
+
 class MTree:
+    """
+    This is the main class of this module and defines the entire tree.
+    """
     def __init__(self):
-        self.stem = None # TreeNode - the first node of the tree
-        self.verts = [] # list of Vector - the vertices of the tree
-        self.faces = [] # list of list of int - the faces of the tree
-    
+        self.stem = None    # TreeNode - the first node of the tree
+        self.verts = []     # list of Vector - the vertices of the tree
+        self.faces = []     # list of list of int - the faces of the tree
 
     def build_mesh_data(self, resolution):
         verts = []
@@ -22,13 +25,27 @@ class MTree:
         bone_weights = dict()
         build_module_rec(self.stem, resolution, verts, faces, uvs, weights, bone_weights)
         return to_array(verts), faces, weights, uvs, bone_weights
-    
 
     def create_object(self):
+        """
+        At the moment this class does nothing. Not sure what it does or why it is necessary
+        :return:
+        """
         pass
-    
 
     def add_trunk(self, length, radius, end_radius, shape, resolution, randomness, axis_attraction, creator):
+        """
+        Add a trunk to the tree using input parameters
+        :param length: Length of the trunk from base to top
+        :param radius: Radius of the trunk at the base
+        :param end_radius: Radius of the trunk at the top
+        :param shape: \todo fill this up
+        :param resolution:  Resolution along the axis of the trunk - higher value creates more segments
+        :param randomness: \todo fill this up
+        :param axis_attraction: A measure of straightness (how close is trunk to its axis)
+        :param creator: \todo fill this up
+        :return: Nothing
+        """
         self.stem = MTreeNode(Vector((0,0,0)), Vector((0,0,1)), radius, creator)
         self.stem.is_branch_origin = True
         remaining_length = length

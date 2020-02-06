@@ -4,15 +4,37 @@ from math import pi, sqrt, inf, cos, sin
 import numpy as np
 
 def random_tangent(dir):
-    v = random_on_unit_sphere()
-    return v.cross(dir)
+    """
+    Generates a tangent on the unit sphere that is perpendicular to the input direction
+    :param dir: Vector - input direction to which the tangent is required
+    :return Vector - the tangent
+    """
+    v = random_on_unit_sphere()     # get a point on the unit sphere
+    return v.cross(dir)             # cross product wiht the input direction gives a tangent
 
 def random_on_unit_sphere():
+    """
+    Generates a pseudo-random point on a unit sphere.
+    :return : Vector - representing a point on the unit sphere
+    """
+    # Generate three random values between [-0.5, 0.5), form a vector in 3D using them and normalize the vector.
     return Vector((random()-.5, random()-.5, random()-.5)).normalized()
 
 
 def build_module_rec(node, resolution, verts, faces, uvs, weights, bone_weights, input_loop=[], uv_height=0):
-    is_origin = False # true if thare are no input loop
+    """
+
+    :param node:
+    :param resolution:
+    :param verts:
+    :param faces:
+    :param uvs:
+    :param weights:
+    :param bone_weights:
+    :param input_loop:
+    :param uv_height:
+    """
+    is_origin = False # true if there are no input loop
     if len(node.children) == 0:
         if len(input_loop) > 0:
             faces.append(input_loop)
@@ -104,6 +126,12 @@ def build_module_rec(node, resolution, verts, faces, uvs, weights, bone_weights,
 
 
 def bridge(l1, l2):
+    """
+
+    :param l1:
+    :param l2:
+    :return
+    """
     faces = []
     n = len(l1)
     for i in range(n):
