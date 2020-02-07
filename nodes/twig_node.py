@@ -10,6 +10,10 @@ from ..tree import MTree
 from random import random, seed
 
 class MtreeTwig(Node, BaseNode):
+    """
+
+    """
+    # Label of the node in blender. Use this to access this node in a python script.
     bl_label = "Twig Node"
     
     seed = IntProperty(default=1)

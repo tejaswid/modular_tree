@@ -11,13 +11,21 @@ from ..tree import MTree
 
 
 class MtreeParameters(Node, BaseNode):
+    """
+    This is the Tree parameters Node the controls the overall generation of the tree.
+    """
+    # Label of the node in blender. Use this to access this node in a python script.
     bl_label = "Tree parameters"
-    
-    auto_update = BoolProperty(update = BaseNode.property_changed)
+    # Boolean indicating if the tree has to be automatically updated
+    auto_update = BoolProperty(update = BaseNode.property_changed, default=False,
+                               description="Boolean indicating if the tree has to be automatically updated")
+
     mesh_type = bpy.props.EnumProperty(
         items=[('final', 'Final', ''), ('preview', 'Preview', '')],
         name="output",
-        default="preview", update = BaseNode.property_changed)
+        default="preview", update = BaseNode.property_changed,
+        description="The mesh type to generate. Use Preview for prototyping and Final for final generation")
+
     resolution = IntProperty(min=0, default=16, update = BaseNode.property_changed)
     create_leafs = BoolProperty(default = False, update = BaseNode.property_changed)
     leaf_amount = IntProperty(min=1, default=3000, update = BaseNode.property_changed)
