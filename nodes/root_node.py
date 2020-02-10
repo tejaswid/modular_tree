@@ -36,7 +36,7 @@ class MtreeRoots(Node, BaseNode):
 
     def draw_buttons(self, context, layout):
         """
-        Draw buttons in the UI
+        Draws buttons in the UI
         """
         col = layout.column()
         for i in self.properties:

@@ -1,6 +1,9 @@
 from bpy.types import Node
 
 class BaseNode:
+    """
+    Base class for all the nodes for tree generation
+    """
     @classmethod
     def poll(cls, ntree):
         return ntree.bl_idname == 'MtreeNodeTree'
@@ -21,13 +24,13 @@ class BaseNode:
         return self.name
     
     def update(self):
-        if self.bl_idname not in {"MtreeParameters", "MtreeTwig"}: # always have a free output for tree functions
+        if self.bl_idname not in {"MtreeParameters", "MtreeTwig"}:   # always have a free output for tree functions
             output_number = len(self.outputs) 
             output_used = len([i for i in self.outputs if len(i.links) > 0])
-            if output_number - output_used > 1: # removing output in excess
+            if output_number - output_used > 1:     # removing output in excess
                 for i in range(output_number - output_used - 1):
                     self.outputs.remove(self.outputs[-1])
-            elif output_number - output_used == 0: # adding one output when a link has just been created
+            elif output_number - output_used == 0:  # adding one output when a link has just been created
                 self.outputs.new('TreeSocketType', str(output_used))
 
     def property_changed(self, context):

@@ -13,7 +13,7 @@ class MTree:
     This is the main class of this module and defines the entire tree.
     """
     def __init__(self):
-        self.stem = None    # TreeNode - the first node of the tree
+        self.stem = None    # MTreeNode - the first node of the tree
         self.verts = []     # list of Vector - the vertices of the tree
         self.faces = []     # list of list of int - the faces of the tree
 
@@ -54,6 +54,8 @@ class MTree:
             if remaining_length < 1/resolution:
                 # last last branch is shorter so that the trunk is exactly of required length
                 resolution = 1/remaining_length
+
+            # generate a random tangent vector to the direction of the extremity
             tangent = random_tangent(extremity.direction)
 
             # direction of new TreeNode
@@ -75,6 +77,7 @@ class MTree:
              randomness, split_proba, split_angle, split_radius, split_flatten,
              end_radius, gravity_strength, floor_avoidance, can_spawn_leaf, creator, selection):
         """
+        Grows a tree element
 
         :param length:
         :param shape_start:
@@ -91,21 +94,24 @@ class MTree:
         :param floor_avoidance:
         :param can_spawn_leaf:
         :param creator:
-        :param selection
+        :param selection:
         """
         grow_candidates = []
         self.stem.get_grow_candidates(grow_candidates, selection)   # get all leafs of valid creator
+        print("monkey")
+        print(grow_candidates)
 
         branch_length = 1/resolution    # branch length is used multiple times so best to calculate it once
 
         def shape_length(x):
             """
-            Returns y(x) = shape_start + (shape_end - shape_start)*x  - 4*shape_convexity*x*(x-1)
+            Returns the shape of the curve, which is parametrized by the position along the curve
+            y(x) = shape_start + (shape_end - shape_start)*x  - 4*shape_convexity*x*(x-1)
             y(0) = shape_start, y(1) = shape_end, y(0.5) = 0.5*(shape_start + shape_end) + shape_convexity
 
             The interpolation is linear if shape_convexity is zero. Else it is quadratic.
 
-            :param x: parameter along the curve, length from the start
+            :param x: parameter along the curve, x=0 is the start and x=1 is the end of the curve
             :return: y(x)
             """
             return -4*shape_convexity*x*(x-1) + x*shape_end + (1-x)*shape_start
