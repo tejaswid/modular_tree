@@ -4,8 +4,7 @@ from math import inf
 
 class MTreeNode:
     """
-    What is this class? is this the node that we get in the node editor? Then this is the user interface for the
-    actual tree.
+    This is the basic unit of the entire tree.
     """
     def __init__(self, position, direction, radius, creator=0):
         """
@@ -32,26 +31,31 @@ class MTreeNode:
 
     def get_grow_candidates(self, candidates, creator):
         """
-        recursively populate candidates with leafs of tree if a leaf has the right creator
-        returns min and max height of found nodes
+        Get candidates that can be grown.
+        Recursively populates @candidates with nodes starting from the current node until the last child
+        that the same @creator created. (leafs of tree if a leaf has the right creator)
+        Returns min and max height over all the candidates
 
-        :param candidates:
-        :param creator:
-        :return:
+        :param candidates: The list of candidates that can be grown. This is the main output.
+        :param creator: The ID of the NodeFunction that created this node
+        :return: the minimum and maximum height of the node and all its children
         """
         # initializing max and min heights
         max_height = -inf
         min_height = inf
 
-        if len(self.children) == 0:         # only extremities can be grown
-            if self.creator == creator:     # only grow node created by creator
+        # only extremities can be grown
+
+        # if the node does not have any children
+        if len(self.children) == 0:
+            if self.creator == creator:     # only grow the node created by creator
                 candidates.append(self)
                 max_height = min_height = self.position.z   # get height of node
             
         for child in self.children:
-            min_h, max_h = child.get_grow_candidates(candidates, creator)   # recursivelly call function to children
-            min_height = min(min_height, min_h)  # min height is now the min between istself and the min height of child
-            max_height = max(max_height, max_h)  # max height is now the max between istself and the max height of child
+            min_h, max_h = child.get_grow_candidates(candidates, creator)   # recursively call function to children
+            min_height = min(min_height, min_h)  # min height is now the min between itself and the min height of child
+            max_height = max(max_height, max_h)  # max height is now the max between itself and the max height of child
         
         return min_height, max_height
 
@@ -71,7 +75,7 @@ class MTreeNode:
             self.position_in_branch = 1     # return the length of the branch and set the position_in_branch to 1
             return current_distance
         
-        for child in self.children[1:]:     # recursivelly call the function on all side children
+        for child in self.children[1:]:     # recursively call the function on all side children
             child.set_positions_in_branches(0, 0)       # the current_distance of a side child is 0 since it is the begining of a new branch
 
         distance_to_child = (self.position - self.children[0].position).length
