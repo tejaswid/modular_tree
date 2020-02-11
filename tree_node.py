@@ -1,4 +1,3 @@
-
 from math import inf
 
 
@@ -8,6 +7,8 @@ class MTreeNode:
     """
     def __init__(self, position, direction, radius, creator=0):
         """
+        Initialization
+
         :param position: Vector - Position of the node in local space
         :param direction: Vector -  Direction of the node in local space
         :param radius: float - Radius of the node (at the start?)
@@ -16,7 +17,7 @@ class MTreeNode:
         self.position = position        # Vector - position of node in local space
         self.direction = direction      # Vector - direction of node in local space
         self.radius = radius            # float - radius of node
-        self.children = []              # list of TreeNode - the extremities of the node.
+        self.children = []              # list of MTreeNode - the extremities of the node.
                                         # First child is the continuity of the branch
         self.creator = creator          # int - the id of the NodeFunction that created the node
         self.growth = 0                 # float - when growing nodes it is useful to know how much they should grow.
@@ -25,7 +26,7 @@ class MTreeNode:
         self.growth_radius = 0          # float - The radius of the node when it first started growing
         self.can_be_splitted = True     # bool - if true the node can be split (can have more than 1 children)
         self.position_in_branch = 0     # float - 0 when node is at the beginning of a branch, 1 when it is at the end
-        self.is_branch_origin = False   # bool - indicates if this is the origin branch or not. \todo true for trunk?
+        self.is_branch_origin = False   # bool - indicates if this is the origin of a tree element or not.
         self.can_spawn_leaf = True      # bool - if true this branch segment can spawn leaves
         self.bone_name = None           # string - name of bone the branch is bound to, if any.
 
@@ -76,7 +77,8 @@ class MTreeNode:
             return current_distance
         
         for child in self.children[1:]:     # recursively call the function on all side children
-            child.set_positions_in_branches(0, 0)       # the current_distance of a side child is 0 since it is the begining of a new branch
+            # the current_distance of a side child is 0 since it is the beginning of a new branch
+            child.set_positions_in_branches(0, 0)
 
         distance_to_child = (self.position - self.children[0].position).length
         branch_length = self.children[0].set_positions_in_branches(current_distance, distance_to_child)
@@ -91,11 +93,14 @@ class MTreeNode:
         :param start:
         :param end:
         """
-        if len(self.children) == 1 and not self.is_branch_origin and self.creator == creator and end >= self.position_in_branch >= start:
+        # if there is only one child and this node is not the origin of a branch
+        if len(self.children) == 1 and not self.is_branch_origin \
+                and self.creator == creator and end >= self.position_in_branch >= start:
             if end <= start:
                 self.position_in_branch = 0
             else:
-                self.position_in_branch = (self.position_in_branch - start) / (end-start) # transform the position in branch so that a position at offset is 0
+                # transform the position in branch so that a position at offset is 0
+                self.position_in_branch = (self.position_in_branch - start) / (end-start)
             candidates.append(self)
         
         for child in self.children:
@@ -133,10 +138,11 @@ class MTreeNode:
 
     def get_armature_data(self, min_radius, bone_index, armature_data, parent_index):
         """
-        armature data is list of list of (position_head, position_tail, radius_head, radius_tail, parent bone index) of each node. bone_index is a list of one int
+        armature data is list of list of (position_head, position_tail, radius_head, radius_tail, parent bone index) of
+        each node. bone_index is a list of one int
         """
-        
-        if self.radius > min_radius and len(self.children) > 0:  # if radius is greater than max radius, add data to armature data
+        # if radius is greater than max radius, add data to armature data
+        if self.radius > min_radius and len(self.children) > 0:
             child = self.children[0]
             armature_data[-1].append((self.position, child.position, self.radius, child.radius, parent_index))
             bone_name = "bone_" + str(bone_index[0])
