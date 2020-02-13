@@ -3,11 +3,12 @@ import json
 from collections import deque
 import bpy
 from mathutils import Vector
-from bpy.types import NodeTree, Node, NodeSocket, Operator, Object
-import nodeitems_utils
-from nodeitems_utils import NodeCategory, NodeItem
+from bpy.types import NodeTree, Node, NodeSocket, Operator, Object, Panel
 from bpy.props import IntProperty, FloatProperty, EnumProperty, BoolProperty, StringProperty, PointerProperty
 from .base_node import BaseNode
+
+import nodeitems_utils
+from nodeitems_utils import NodeCategory, NodeItem
 
 def get_preset_list(self, context): # used to get all presets
     folder_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -191,7 +192,7 @@ class AppendMaterials(Operator):
 
         return {'FINISHED'}
 
-class MtreePanel(bpy.types.Panel):
+class MtreePanel(Panel):
     bl_idname = "mtree_settings_panel"
     bl_label = "Mtree"
     bl_space_type = "NODE_EDITOR"
