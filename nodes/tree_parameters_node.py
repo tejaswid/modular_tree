@@ -18,13 +18,13 @@ class MtreeParameters(Node, BaseNode):
     bl_label = "Tree parameters"
     # Boolean indicating if the tree has to be automatically updated
     auto_update = BoolProperty(update=BaseNode.property_changed, default=False,
-                               description="Boolean indicating if the tree has to be automatically updated")
+                               description="Toggle auto updated of the tree when changes are made")
     # The mesh type to generate. Use Preview for prototyping and Final for final generation
     mesh_type = bpy.props.EnumProperty(
         items=[('final', 'Final', ''), ('preview', 'Preview', '')],
         name="output",
         default="preview", update=BaseNode.property_changed,
-        description="The mesh type to generate. Use Preview for prototyping and Final for final generation")
+        description="The mesh type to generate, use Preview for prototyping and Final for final generation")
     # Res
     resolution = IntProperty(min=0, default=16, update=BaseNode.property_changed)
     # Boolean indicating if Leaves have to be created or not

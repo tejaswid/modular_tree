@@ -36,18 +36,20 @@ class MTree:
     def add_trunk(self, length, radius, end_radius, shape, resolution, randomness, axis_attraction, creator):
         """
         Add a trunk to the tree using input parameters
-        :param length: Length of the trunk from base to top
-        :param radius: Radius of the trunk at the base
-        :param end_radius: Radius of the trunk at the top
-        :param shape: \todo fill this up
-        :param resolution:  Resolution along the axis of the trunk - higher value creates more segments
-        :param randomness: \todo fill this up
-        :param axis_attraction: A measure of straightness (how close is trunk to its axis)
-        :param creator: \todo fill this up
+        :param length: Length of the trunk, in metres, along its skeleton curve
+        :param radius: Radius of the trunk, in metres, at the base
+        :param end_radius: Radius of the trunk, in metres, at the top
+        :param shape: Degree of the polynomial that maps the radius of the trunk as a function of the trunk's length
+        :param resolution:  Number of segments per metre along the trunk's curve
+        :param randomness: Amount of irregularity, i.e. disturbance tangential to the tree skeleton
+        :param axis_attraction: A measure of straightness (how close the trunk is to the vertical axis)
+        :param creator: ID of the node that creates the trunk
         :return: Nothing
         """
+        # The first node of the tree is at (0,0,0) with its direction vertically upwards.
         self.stem = MTreeNode(Vector((0, 0, 0)), Vector((0, 0, 1)), radius, creator)
-        self.stem.is_branch_origin = True
+        self.stem.is_branch_origin = True   # Set it to be the origin of a tree element
+
         remaining_length = length
         extremity = self.stem   # extremity is always the current last node of the trunk
         while remaining_length > 0:
@@ -55,7 +57,7 @@ class MTree:
                 # last last branch is shorter so that the trunk is exactly of required length
                 resolution = 1/remaining_length
 
-            # generate a random tangent vector to the direction of the extremity
+            # generate a vector in the plane tangential to the direction of the extremity
             tangent = random_tangent(extremity.direction)
 
             # direction of new TreeNode
@@ -98,7 +100,7 @@ class MTree:
         """
         grow_candidates = []
         self.stem.get_grow_candidates(grow_candidates, selection)   # get all leafs of valid creator
-        print("monkey")
+
         print(grow_candidates)
 
         branch_length = 1/resolution    # branch length is used multiple times so best to calculate it once
@@ -129,16 +131,29 @@ class MTree:
         while len(grow_candidates) > 0:
             node = grow_candidates.popleft()
 
-            # if 1 the branch grows normally, if more than 1 the branch forks into more branches
+            # get the type of node
+            # (a) children_number = 1 <- normal branch node
+            # (b) children_number = 2 <- forking node
             children_number = 1 if random() > split_proba or node.is_branch_origin else 2
+            # compute tangent to the node direction
             tangent = random_tangent(node.direction)
+            # if the tangent is pointing downwards or if the branch forks at this node
             if tangent.z < 0 or children_number > 1:
-                tangent.z *= (1-split_flatten)
-                tangent.normalize()
+                tangent.z *= (1-split_flatten)  # factor in how horizontal the branch should be
+                tangent.normalize()             # get the unit tangent
+
             for i in range(children_number):
                 # compute how much the new direction will be changed by tangent
+                # -------------------------------------------------------------
+                # 1. Amount of deviation
+                # (a) the deviation is @randomness
+                # (b) the deviation is the @split_angle
                 deviation = randomness if children_number == 1 else split_angle
+                # 2. Direction of new node
+                # (a) linear interpolation of (tangent * deviation) and old direction
+                # (b) linear interpolation of (tangent * i * split_angle) and old direction
                 direction = node.direction.lerp(tangent * (i - .5) * 2, deviation)  # direction of new node
+
                 direction += Vector((0, 0, -1)) * gravity_strength / 10 / resolution  # apply gravity
                 if floor_avoidance != 0:
                     # if -1 then the branches must stay below ground, if 1 they must stay above ground
@@ -166,6 +181,12 @@ class MTree:
                 if i > 0:
                     radius *= split_radius   # forked branches have smaller radii
 
+                if children_number == 1:
+                    print("Normal branch: i: ", i, " ", creator, position)
+                else:
+                    print("Forking branch: i: ", i, " ", creator, position)
+
+                # Create a new child node with the same creator
                 child = MTreeNode(position, direction, radius, creator)
                 child.growth_goal = node.growth_goal
                 child.growth = growth
@@ -178,6 +199,9 @@ class MTree:
                     grow_candidates.append(child)   # if child can still grow, add it to the grow candidates
 
     def split(self, amount, angle, max_split_number, radius, start, end, flatten, creator, selection):
+        """
+        Creates a split location
+        """
         split_candidates = []
         self.stem.set_positions_in_branches()
         self.stem.get_split_candidates(split_candidates, selection, start, end)

@@ -17,19 +17,21 @@ class MtreeTrunk(Node, BaseNode):
     seed = IntProperty(default=1, update=BaseNode.property_changed, description="Seed for randomization. default=1")
     # Length of the trunk
     length = FloatProperty(min=0, default=25, update=BaseNode.property_changed,
-                           description="Length of the trunk in metres. min=0, max=inf, default=25")
+                           description="Length of the trunk along its skeleton curve. units=m, min=0, max=inf, default=25")
     # Radius of the trunk at the base
     radius = FloatProperty(min=.0005, default=.5, update=BaseNode.property_changed,
-                           description="Radius of the trunk at the base. min=0.005, max=inf, default=0.5")
+                           description="Radius of the trunk at the base. units=m, min=0.005, max=inf, default=0.5")
     # radius of the trunk at the end of the trunk
     end_radius = FloatProperty(min=0, max=1, default=0, update=BaseNode.property_changed,
-                               description="Radius at the end of the trunk. min=0, max=1, default=0")
+                               description="Radius at the top of the trunk. units=m, min=0, max=1, default=0")
     # Number of elements (loops or cylinders) the trunk has along its axis
     resolution = FloatProperty(min=.002, default=1, update=BaseNode.property_changed,
-                               description="Number of elements along the axis. min=0.002, max=inf, default=1")
+                               description="Number of segments per metre along the trunk's curve."
+                                           " min=0.002, max=inf, default=1")
     # Parameter to tune the change in radius of the trunk as a function of the length
     shape = FloatProperty(min=0.01, default=1, update=BaseNode.property_changed,
-                          description="Determines how the radius changes with length. min=0.01, max=inf, default=1")
+                          description="Degree of the polynomial that determines how the radius changes with length."
+                                      " min=0.01, max=inf, default=1")
     # Parameter to tune how irregular the trunk looks
     randomness = FloatProperty(min=0, max=0.5, default=.1, update=BaseNode.property_changed,
                                description="Tune how irregular the trunk looks. min=0, max=0.5, default=0.1")
