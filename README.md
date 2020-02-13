@@ -18,16 +18,15 @@ and others such as its creator and list of children.
 ### Tree
 A Tree is a connection collection of objects of the **MTreeNode** class.
 The entire tree can be split into meaningful *elements* which are the following
-- Trunk 
-- Branch
-- Twig
-- Root
+1. [Trunk](#trunk) 
+2. [Branch](#branch)
+3. Twig
+4. Root
 
-#### Trunk
-The Trunk is the most important part of the tree and is required to generate all the other *elements* of the tree.
+#### 1. Trunk <a name="trunk"></a>
+The trunk is the most important *element* of the tree and is required to generate all the other *elements* of the tree.
+The trunk is a collection of objects of the `MTreeNode` class. It is created as follows.
 
-A Trunk is created as follows.  
-- The trunk is a collection of objects of the `MTreeNode` class.
 - The first node, called the *stem* is an `MTreeNode` created at the location (0, 0, 0)
 with its axis pointing vertically upwards i.e. along (0, 0, 1) and with the `radius` as specified.
 - All the nodes (*segments*), except the node at the top are of length 1/`resolution`. 
@@ -59,3 +58,36 @@ The parameters to tune the trunk are
 - `resolution`: Number of segments per metre along the trunk's curve
 - `randomness`: A value to tune how irregular the trunk is. Just a scale factor without any physical meaning.
 - `axis_attraction`: A value to tune how vertical the trunk is. Just a scale factor without any physical meaning.
+
+Missing features that may be useful to have for botanically realistic trees
+- lobes
+- twist of the trunk
+- individual segments of the trunk that follow specific rules of thickness
+
+#### Branch <a name="branch"></a>
+Branches are the generic *elements* of the tree. Branches at every level of the tree are all similar and most 
+importantly differ in their thicknesses (radii) and their ability to spawn leaves. Branches are also collections of 
+objects of the `MTreeNode` class and are created as follows.
+
+- Split and Grow
+
+The parameters available to tune the creation of a branch are the following.
+- `amount`:  
+- `angle`:  
+- `max_split_number`:  
+- `radius`:  
+- `end_radius`:  
+- `start`:  
+- `length`: 
+- `shape_start`:  
+- `shape_end`:  
+- `shape_convexity`:  
+- `resolution`:  
+- `randomness`: 
+- `split_proba`:  
+- `split_flatten`:  
+- `gravity_strength`:  
+- `floor_avoidance`:  
+- `can_spawn_leaf`:  
+- `creator`:  
+- `selection`: 
